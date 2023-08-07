@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+    />
+    <link href="./styles.css" rel="stylesheet" />
+    <title>photo selector</title>
+  </head>
+  <body>
+    <div class="bg">
+      <div class="poly">
+        <main class="start-main">
+          <h1 class="title">Welcome to Photo selector</h1>
+          <button class="select-folder">Select Files</button>
+          <div class="action-buttons">
+            <button class="action-button">start</button>
+            <button class="action-button">cancel</button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+  </body>
+</html>
