@@ -1,15 +1,19 @@
-const func = async () => {
-  const response = await window.versions.ping();
-  console.log(response); // prints out 'pong'
-};
-
-func();
-
 const selectFolderBtn = document.getElementById("select-folder");
+const startBtn = document.getElementById("start");
 
-selectFolderBtn.addEventListener("click", async (evt) => {
-  console.log("select-dirs");
-  window.postMessage({
-    type: "select-dirs",
-  });
-});
+async function select() {
+  window.postMessage({ type: "select-dirs" });
+  const response = await window.home.select();
+  if (!response?.length) return;
+  startBtn.hidden = false;
+}
+
+async function start() {
+  selectFolderBtn.disabled = true;
+  startBtn.disabled = true;
+  const response = await window.home.start();
+  console.log(response);
+}
+
+selectFolderBtn.addEventListener("click", select);
+startBtn.addEventListener("click", start);

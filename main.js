@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
+const { PythonShell } = require("python-shell");
 
 function createWindow() {
   // Create the browser window.
@@ -13,25 +14,33 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile("index.html");
+  mainWindow.loadFile("home.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   return mainWindow;
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  ipcMain.handle("ping", () => "pong");
 
+async function handleStart(mainWindow) {
+  const [result] = await PythonShell.run("./scripts/test.py", null);
+  console.log(result);
+  const data = JSON.parse(result.replace(/'/g, '"'));
+  console.log(data);
+  mainWindow.loadFile("event.html");
+}
+
+app.whenReady().then(() => {
   const mainWindow = createWindow();
-  ipcMain.on("select-dirs", async (event, arg) => {
+  ipcMain.handle("start", () => handleStart(mainWindow));
+  ipcMain.handle("select", async (event, arg) => {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ["openDirectory"],
     });
-    console.log("directories selected", result.filePaths);
+    return result.filePaths;
   });
 
   app.on("activate", function () {
